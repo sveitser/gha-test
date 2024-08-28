@@ -20,9 +20,7 @@ jobs:
           sudo mv /home/runner/.cargo/bin/rmz /usr/local/bin/rmz
 
       - run: |
-          du -h -d 1 /usr/share
-          du -h -d 1 /usr/local/lib
-          du -h -d 1 /opt
+          du -h -d 1 /opt/hostedtoolcache
 
       # Make more disk space available on public runner
       - name: Remove unused software
@@ -31,8 +29,16 @@ jobs:
           sudo df -h
           echo
           sudo rmz -f /usr/share/dotnet
+          sudo rmz -f /usr/share/swift
+          sudo rmz -f /usr/share/gradle-*
+          sudo rmz -f /usr/share/az_*
           sudo rmz -f /usr/local/lib/android
+          sudo rmz -f /usr/local/lib/node_modules
           sudo rmz -f /opt/ghc
+          sudo rmz -f /opt/az
+          sudo rmz -f /opt/pipx
+          sudo rmz -f /opt/google
+          sudo rmz -f /opt/microsoft
           sudo rmz -f /opt/hostedtoolcache/CodeQL
           echo "Available storage after:"
           sudo df -h
