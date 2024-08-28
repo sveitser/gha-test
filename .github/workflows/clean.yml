@@ -19,6 +19,10 @@ jobs:
           cargo binstall -y rmz
           sudo mv /home/runner/.cargo/bin/rmz /usr/local/bin/rmz
 
+      - run: |
+          du -h -d 1 /usr
+          du -h -d 1 /opt
+
       # Make more disk space available on public runner
       - name: Remove unused software
         run: |
