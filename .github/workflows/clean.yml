@@ -39,7 +39,7 @@ jobs:
           sudo rmz -f /opt/pipx
           sudo rmz -f /opt/google
           sudo rmz -f /opt/microsoft
-          sudo rmz -f /opt/hostedtoolcache/CodeQL
+          sudo rmz -f /opt/hostedtoolcache
           echo "Available storage after:"
           sudo df -h
           echo
