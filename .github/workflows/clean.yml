@@ -1,0 +1,33 @@
+name: Clean
+
+on:
+  workflow_dispatch:
+  push:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: cargo-bins/cargo-binstall@main
+
+      - run: |
+          cargo binstall -y rmz
+
+      # Make more disk space available on public runner
+      - name: Remove unused software
+        run: |
+          echo "Available storage before:"
+          sudo df -h
+          echo
+          sudo rmz -f /usr/share/dotnet
+          sudo rmz -f /usr/local/lib/android
+          sudo rmz -f /opt/ghc
+          sudo rmz -f /opt/hostedtoolcache/CodeQL
+          echo "Available storage after:"
+          sudo df -h
+          echo
