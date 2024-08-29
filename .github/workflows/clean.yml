@@ -24,7 +24,7 @@ jobs:
       #     owner: ${{ GITHUB_REPOSITORY_OWNER }}
       - name: move repo
         run: |
-          mv . /tmp/gha-work
+          rsync -a ./ /tmp/gha-work/
         working-directory: ${{ github.workspace }}
 
       - name: inspect
