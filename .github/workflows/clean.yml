@@ -16,19 +16,19 @@ jobs:
     #     working-directory: /tmp/gha-work
 
     steps:
+      - name: move workspace
+        run: |
+          mkdir /tmp/gha-work
+          cd /tmp/gha-work
+          rm -rfv $GITHUB_WORKSPACE
+          ln -sv /tmp/gha-work $GITHUB_WORKSPACE
+
       - uses: actions/checkout@v4
       # - name: Clone repo
       #   uses: GuillaumeFalourd/clone-github-repo-action@v2.3
       #   with:
       #     repository: 'nitro-espresso-integration'
       #     owner: ${{ GITHUB_REPOSITORY_OWNER }}
-      - name: move repo
-        run: |
-          rsync -a ./ /tmp/gha-work/
-          cd /tmp/gha-work
-          rm -rfv $GITHUB_WORKSPACE
-          ln -sv /tmp/gha-work $GITHUB_WORKSPACE
-        working-directory: ${{ github.workspace }}
 
       - name: inspect
         run: |
