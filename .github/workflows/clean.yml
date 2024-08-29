@@ -32,6 +32,12 @@ jobs:
           echo "PWD" $PWD
           ls -lah
 
+      - name: Lint
+        uses: golangci/golangci-lint-action@v5
+        with:
+          version: v1.59.1
+          skip-cache: true
+          working-directory: /tmp/gha-work
 
       # - uses: cargo-bins/cargo-binstall@main
 
