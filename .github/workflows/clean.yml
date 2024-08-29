@@ -11,35 +11,52 @@ concurrency:
 jobs:
   clean:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /tmp/gha-work
 
     steps:
-      - uses: cargo-bins/cargo-binstall@main
+      - uses: actions/checkout@v4
 
-      - run: |
-          cargo binstall -y rmz
-          sudo mv /home/runner/.cargo/bin/rmz /usr/local/bin/rmz
-
-      - run: |
-          du -h -d 1 /opt/hostedtoolcache
-
-      # Make more disk space available on public runner
-      - name: Remove unused software
+      - name: inspect
         run: |
-          echo "Available storage before:"
-          sudo df -h
-          echo
-          sudo rmz -f /usr/share/dotnet
-          sudo rmz -f /usr/share/swift
-          sudo rmz -f /usr/share/gradle-*
-          sudo rmz -f /usr/share/az_*
-          sudo rmz -f /usr/local/lib/android
-          sudo rmz -f /usr/local/lib/node_modules
-          sudo rmz -f /opt/ghc
-          sudo rmz -f /opt/az
-          sudo rmz -f /opt/pipx
-          sudo rmz -f /opt/google
-          sudo rmz -f /opt/microsoft
-          sudo rmz -f /opt/hostedtoolcache
-          echo "Available storage after:"
-          sudo df -h
-          echo
+          echo "PWD" $PWD
+          ls -lah
+
+      # - name: Clone GuillaumeFalourd/formulas-training PRIVATE repository
+      #   uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+      #   with:
+      #     owner: 'EspressoSystems'
+      #     repository: ${{ GITHUB_REPOSITORY_OWNER }}
+      #     access-token: ${{ secrets.ACCESS_TOKEN }}
+
+      # - uses: cargo-bins/cargo-binstall@main
+
+      # - run: |
+      #     cargo binstall -y rmz
+      #     sudo mv /home/runner/.cargo/bin/rmz /usr/local/bin/rmz
+
+      # - run: |
+      #     du -h -d 1 /opt/hostedtoolcache
+
+      # # Make more disk space available on public runner
+      # - name: Remove unused software
+      #   run: |
+      #     echo "Available storage before:"
+      #     sudo df -h
+      #     echo
+      #     sudo rmz -f /usr/share/dotnet
+      #     sudo rmz -f /usr/share/swift
+      #     sudo rmz -f /usr/share/gradle-*
+      #     sudo rmz -f /usr/share/az_*
+      #     sudo rmz -f /usr/local/lib/android
+      #     sudo rmz -f /usr/local/lib/node_modules
+      #     sudo rmz -f /opt/ghc
+      #     sudo rmz -f /opt/az
+      #     sudo rmz -f /opt/pipx
+      #     sudo rmz -f /opt/google
+      #     sudo rmz -f /opt/microsoft
+      #     sudo rmz -f /opt/hostedtoolcache
+      #     echo "Available storage after:"
+      #     sudo df -h
+      #     echo
