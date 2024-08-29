@@ -25,12 +25,17 @@ jobs:
       - name: move repo
         run: |
           rsync -a ./ /tmp/gha-work/
+          cd /tmp/gha-work
+          rm -rf $GITHUB_WORKDIR
+          ln /tmp/gha-work $GITHUB_WORKDIR
         working-directory: ${{ github.workspace }}
 
       - name: inspect
         run: |
           echo "PWD" $PWD
           ls -lah
+
+          ls -lah $GITHUB_WORKDIR
 
       - name: Lint
         uses: golangci/golangci-lint-action@v5
