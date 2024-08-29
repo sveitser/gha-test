@@ -12,8 +12,8 @@ jobs:
   clean:
     runs-on: ubuntu-latest
     defaults:
-      run:
-        working-directory: /tmp/gha-work
+      # run:
+      #   working-directory: /tmp/gha-work
 
     steps:
       - uses: actions/checkout@v4
