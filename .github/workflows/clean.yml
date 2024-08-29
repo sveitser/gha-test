@@ -17,18 +17,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      # - name: Clone repo
+      #   uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+      #   with:
+      #     repository: 'nitro-espresso-integration'
+      #     owner: ${{ GITHUB_REPOSITORY_OWNER }}
+      - name: move repo
+        run: |
+          mv . /tmp/gha-work
+        working-directory: ${{ github.workspace }}
 
       - name: inspect
         run: |
           echo "PWD" $PWD
           ls -lah
 
-      # - name: Clone GuillaumeFalourd/formulas-training PRIVATE repository
-      #   uses: GuillaumeFalourd/clone-github-repo-action@v2.3
-      #   with:
-      #     owner: 'EspressoSystems'
-      #     repository: ${{ GITHUB_REPOSITORY_OWNER }}
-      #     access-token: ${{ secrets.ACCESS_TOKEN }}
 
       # - uses: cargo-bins/cargo-binstall@main
 
