@@ -11,9 +11,9 @@ concurrency:
 jobs:
   clean:
     runs-on: ubuntu-latest
-    defaults:
-      # run:
-      #   working-directory: /tmp/gha-work
+    # defaults:
+    #   run:
+    #     working-directory: /tmp/gha-work
 
     steps:
       - uses: actions/checkout@v4
