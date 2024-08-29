@@ -26,8 +26,8 @@ jobs:
         run: |
           rsync -a ./ /tmp/gha-work/
           cd /tmp/gha-work
-          rm -rf $GITHUB_WORKDIR
-          ln -s /tmp/gha-work $GITHUB_WORKDIR
+          rm -rfv $GITHUB_WORKDIR
+          ln -sv /tmp/gha-work $GITHUB_WORKDIR
         working-directory: ${{ github.workspace }}
 
       - name: inspect
