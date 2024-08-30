@@ -38,6 +38,16 @@ jobs:
 
           ls -lah $GITHUB_WORKDIR
 
+      - name: check dirs
+        run: |
+          echo $GITHUB_WORKSPACE
+          echo $PWD
+        env:
+          GITHUB_WORKSPACE: /tmp
+          PWD: /tmp
+
+
+
       - name: Lint
         uses: golangci/golangci-lint-action@v5
         with:
