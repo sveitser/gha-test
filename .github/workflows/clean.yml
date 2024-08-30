@@ -40,6 +40,7 @@ jobs:
           cd /tmp/gha-work
 
           echo doing stuff in $(pwd)
+          ls -lah
 
           # HACK: move directory back to GITHUB_WORKSPACE
           cd /
