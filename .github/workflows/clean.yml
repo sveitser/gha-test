@@ -45,7 +45,7 @@ jobs:
 
       - name: Lint
         uses: golangci/golangci-lint-action@v5
-      with:
+        with:
           version: v1.59.1
           skip-cache: true
           # working-directory: /tmp/gha-work
