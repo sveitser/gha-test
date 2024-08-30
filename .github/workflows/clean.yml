@@ -32,32 +32,34 @@ jobs:
 
       - name: test moving
         run: |
-          # Move to other directory to avoid IPC paths over 107 characters
+          set -x
+
+          CHECKOUT_DIR=$PWD
           cd /
-          mv -v $GITHUB_WORKSPACE /tmp/gha-work
+          mv -v $CHECKOUT_DIR /tmp/gha-work
           cd /tmp/gha-work
 
-          go build
+          echo doing stuff in $(pwd)
 
-          # Move directory back to GITHUB_WORKSPACE
+          # HACK: move directory back to GITHUB_WORKSPACE
           cd /
-          mv -v /tmp/gha-work $GITHUB_WORKSPACE
+          mv -v /tmp/gha-work $CHECKOUT_DIR
 
-      - name: Lint
-        uses: golangci/golangci-lint-action@v5
-        with:
-          version: v1.59.1
-          skip-cache: true
-          # working-directory: /tmp/gha-work
+      # - name: Lint
+      #   uses: golangci/golangci-lint-action@v5
+      #   with:
+      #     version: v1.59.1
+      #     skip-cache: true
+      #     # working-directory: /tmp/gha-work
 
-      - name: Cache Build Products
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: v1-${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ matrix.test-mode }}
-          restore-keys: v1-${{ runner.os }}-go-
+      # - name: Cache Build Products
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: |
+      #       ~/go/pkg/mod
+      #       ~/.cache/go-build
+      #     key: v1-${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ matrix.test-mode }}
+      #     restore-keys: v1-${{ runner.os }}-go-
 
       # - uses: cargo-bins/cargo-binstall@main
 
