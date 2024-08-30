@@ -34,14 +34,14 @@ jobs:
         run: |
           # Move to other directory to avoid IPC paths over 107 characters
           cd /
-          mv $GITHUB_WORKSPACE /tmp/gha-work
+          mv -v $GITHUB_WORKSPACE /tmp/gha-work
           cd /tmp/gha-work
 
           go build
 
           # Move directory back to GITHUB_WORKSPACE
           cd /
-          mv /tmp/gha-work $GITHUB_WORKSPACE
+          mv -v /tmp/gha-work $GITHUB_WORKSPACE
 
       - name: Lint
         uses: golangci/golangci-lint-action@v5
