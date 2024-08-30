@@ -22,7 +22,7 @@ jobs:
           cd /tmp/gha-work
           rm -rfv $GITHUB_WORKSPACE
           ln -sv /tmp/gha-work $GITHUB_WORKSPACE
-          ln -sv /tmp/gha-work/home ~
+          ln -sv ~ /tmp/gha-work/home
 
       - uses: actions/checkout@v4
       # - name: Clone repo
