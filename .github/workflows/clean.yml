@@ -30,9 +30,6 @@ jobs:
       #     repository: 'nitro-espresso-integration'
       #     owner: ${{ GITHUB_REPOSITORY_OWNER }}
 
-      - name: move directory to run tests
-
-
       - name: test moving
         run: |
           # Move to other directory to avoid IPC paths over 107 characters
