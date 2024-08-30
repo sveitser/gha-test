@@ -16,12 +16,12 @@ jobs:
     #     working-directory: /tmp/gha-work
 
     steps:
-      - name: move workspace
-        run: |
-          mkdir -p /tmp/gha-work
-          cd /tmp/gha-work
-          rm -rfv $GITHUB_WORKSPACE
-          ln -sv /tmp/gha-work $GITHUB_WORKSPACE
+      # - name: move workspace
+      #   run: |
+      #     mkdir -p /tmp/gha-work
+      #     cd /tmp/gha-work
+      #     rm -rfv $GITHUB_WORKSPACE
+      #     ln -sv /tmp/gha-work $GITHUB_WORKSPACE
 
       - uses: actions/checkout@v4
       # - name: Clone repo
@@ -30,15 +30,25 @@ jobs:
       #     repository: 'nitro-espresso-integration'
       #     owner: ${{ GITHUB_REPOSITORY_OWNER }}
 
+      - name: move directory to run tests
 
-      - name: setup for cache
+
+      - name: test moving
         run: |
-          mkdir -p ~/go/pkg/mod
-          ln -s ~/go/pkg/mod /tmp/gha-work/go-pkg-mod
+          # Move to other directory to avoid IPC paths over 107 characters
+          cd /
+          mv $GITHUB_WORKSPACE /tmp/gha-work
+          cd /tmp/gha-work
+
+          go build
+
+          # Move directory back to GITHUB_WORKSPACE
+          cd /
+          mv /tmp/gha-work $GITHUB_WORKSPACE
 
       - name: Lint
         uses: golangci/golangci-lint-action@v5
-        with:
+      with:
           version: v1.59.1
           skip-cache: true
           # working-directory: /tmp/gha-work
@@ -47,9 +57,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            # ~/go/pkg/mod
-            go-pkg-mod
-            # ~/.cache/go-build
+            ~/go/pkg/mod
+            ~/.cache/go-build
           key: v1-${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ matrix.test-mode }}
           restore-keys: v1-${{ runner.os }}-go-
 
