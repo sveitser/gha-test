@@ -18,10 +18,10 @@ jobs:
     steps:
       - name: move workspace
         run: |
-          mkdir -p /tmp/gha-work/w
-          cd /tmp/gha-work/w
+          mkdir -p /tmp/gha-work
+          cd /tmp/gha-work
           rm -rfv $GITHUB_WORKSPACE
-          ln -sv /tmp/gha-work/w $GITHUB_WORKSPACE
+          ln -sv /tmp/gha-work $GITHUB_WORKSPACE
 
       - uses: actions/checkout@v4
       # - name: Clone repo
@@ -31,6 +31,11 @@ jobs:
       #     owner: ${{ GITHUB_REPOSITORY_OWNER }}
 
 
+      - name: setup for cache
+        run: |
+          mkdir -p ~/go/pkg/mod
+          ln -s ~/go/pkg/mod /tmp/gha-work/go-pkg-mod
+
       - name: Lint
         uses: golangci/golangci-lint-action@v5
         with:
@@ -38,16 +43,13 @@ jobs:
           skip-cache: true
           # working-directory: /tmp/gha-work
 
-      - name: inspect
-        run: |
-          ls -lah ~/go/pkg/mod
-
       - name: Cache Build Products
         uses: actions/cache@v3
         with:
           path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
+            # ~/go/pkg/mod
+            go-pkg-mod
+            # ~/.cache/go-build
           key: v1-${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ matrix.test-mode }}
           restore-keys: v1-${{ runner.os }}-go-
 
