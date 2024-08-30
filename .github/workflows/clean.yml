@@ -30,12 +30,6 @@ jobs:
       #     repository: 'nitro-espresso-integration'
       #     owner: ${{ GITHUB_REPOSITORY_OWNER }}
 
-      - name: inspect
-        run: |
-          echo "PWD" $PWD
-          ls -lah
-
-          ls -lah $GITHUB_WORKDIR
 
       - name: Lint
         uses: golangci/golangci-lint-action@v5
@@ -43,6 +37,10 @@ jobs:
           version: v1.59.1
           skip-cache: true
           # working-directory: /tmp/gha-work
+
+      - name: inspect
+        run: |
+          ls -lah ~/go/pkg/mod
 
       - name: Cache Build Products
         uses: actions/cache@v3
@@ -52,8 +50,6 @@ jobs:
             ~/home/runner/.cache/go-build
           key: v1-${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ matrix.test-mode }}
           restore-keys: v1-${{ runner.os }}-go-
-        env:
-          GITHUB_WORKSPACE: /tmp/gha-work
 
       # - uses: cargo-bins/cargo-binstall@main
 
