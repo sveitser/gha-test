@@ -23,7 +23,7 @@ jobs:
       #     rm -rfv $GITHUB_WORKSPACE
       #     ln -sv /tmp/gha-work $GITHUB_WORKSPACE
       - name: Install latest gotestsum
-        uses: autero1/action-gotestsum@v2
+        uses: autero1/action-gotestsum@v2.0.0
         with:
           gotestsum_version: 1.12.0
 
