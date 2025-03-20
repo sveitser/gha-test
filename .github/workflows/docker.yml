@@ -43,7 +43,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels  }}
           # always export to file for testing in test-demo
