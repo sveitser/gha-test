@@ -68,7 +68,7 @@ jobs:
 
   load-docker:
     runs-on: ubuntu-latest
-    needs: [docker]
+    needs: [meta]
     steps:
       - name: check outputs
         run: |
