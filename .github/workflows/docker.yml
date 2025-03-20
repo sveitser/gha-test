@@ -48,7 +48,11 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels  }}
           # always export to file for testing in test-demo
           outputs: |
-            type=oci,dest=${{ runner.temp }}/service.tar
+            type=image,dest=${{ runner.temp }}/service.tar
+
+      - name: check files
+        run: |
+          find ${{ runner.temp }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -75,6 +79,7 @@ jobs:
           find ${{ runner.temp }}/docker-images
 
           for file in $(find ${{ runner.temp }}/docker-images -name "*.tar"); do
+            echo "Loading $file"
             docker load --input $file
           done
 
