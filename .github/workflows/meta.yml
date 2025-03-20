@@ -74,7 +74,7 @@ jobs:
     steps:
       - name: check outputs
         run: |
-          echo ${{ needs.meta.outputs.tags }}
+          echo ${{ needs.meta.outputs.tag }}
 
       # - name: Download artifacts
       #   uses: actions/download-artifact@v4
