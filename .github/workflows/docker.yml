@@ -74,10 +74,8 @@ jobs:
           # be ${{ runner.temp }}/docker-images/<artifact-name>/<service>.tar
           find ${{ runner.temp }}/docker-images
 
-          for file in ${{ runner.temp }}/docker-images/*/*.tar; do
+          for file in $(find ${{ runner.temp }}/docker-images -name "*.tar"); do
             docker load --input $file
-            # tag as main to run the demo
-
           done
 
           docker images
