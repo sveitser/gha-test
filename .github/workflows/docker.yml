@@ -48,7 +48,7 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels  }}
           # always export to file for testing in test-demo
           outputs: |
-            type=image,dest=${{ runner.temp }}/service.tar
+            type=oci,dest=${{ runner.temp }}/service.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
