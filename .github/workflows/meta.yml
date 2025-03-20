@@ -11,6 +11,8 @@ concurrency:
 jobs:
   meta:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.metadata.outputs.tags }}
     strategy:
       matrix:
         service:
@@ -72,7 +74,7 @@ jobs:
     steps:
       - name: check outputs
         run: |
-          echo ${{ needs.meta.steps.metadata.outputs.tags }}
+          echo ${{ needs.meta.outputs.tags }}
 
       # - name: Download artifacts
       #   uses: actions/download-artifact@v4
