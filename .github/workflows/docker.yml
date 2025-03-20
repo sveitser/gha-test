@@ -48,13 +48,14 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels  }}
           # always export to file for testing in test-demo
           outputs: |
-            type=docker,dest=${{ runner.temp }}/service.tar
+            type=image,dest=${{ runner.temp }}/service.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: service-docker-image
           path: ${{ runner.temp }}/service.tar
+          if-no-files-found: error
 
   load-docker:
     runs-on: ubuntu-latest
@@ -75,6 +76,8 @@ jobs:
 
           for file in ${{ runner.temp }}/docker-images/*/*.tar; do
             docker load --input $file
+            # tag as main to run the demo
+
           done
 
           docker images
