@@ -1,101 +1,101 @@
-name: Clean
+# name: Clean
 
-on:
-  workflow_dispatch:
-  push:
+# on:
+#   workflow_dispatch:
+#   push:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+#   cancel-in-progress: true
 
-jobs:
-  clean:
-    runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: /tmp/gha-work
+# jobs:
+#   clean:
+#     runs-on: ubuntu-latest
+#     # defaults:
+#     #   run:
+#     #     working-directory: /tmp/gha-work
 
-    steps:
-      # - name: move workspace
-      #   run: |
-      #     mkdir -p /tmp/gha-work
-      #     cd /tmp/gha-work
-      #     rm -rfv $GITHUB_WORKSPACE
-      #     ln -sv /tmp/gha-work $GITHUB_WORKSPACE
-      - name: Install latest gotestsum
-        uses: autero1/action-gotestsum@v2.0.0
-        with:
-          gotestsum_version: 1.12.0
+#     steps:
+#       # - name: move workspace
+#       #   run: |
+#       #     mkdir -p /tmp/gha-work
+#       #     cd /tmp/gha-work
+#       #     rm -rfv $GITHUB_WORKSPACE
+#       #     ln -sv /tmp/gha-work $GITHUB_WORKSPACE
+#       - name: Install latest gotestsum
+#         uses: autero1/action-gotestsum@v2.0.0
+#         with:
+#           gotestsum_version: 1.12.0
 
-      - name: gotestsum
-        run: gotestsum --version
+#       - name: gotestsum
+#         run: gotestsum --version
 
-      # - uses: actions/checkout@v4
-      # # - name: Clone repo
-      # #   uses: GuillaumeFalourd/clone-github-repo-action@v2.3
-      # #   with:
-      # #     repository: 'nitro-espresso-integration'
-      # #     owner: ${{ GITHUB_REPOSITORY_OWNER }}
+#       # - uses: actions/checkout@v4
+#       # # - name: Clone repo
+#       # #   uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+#       # #   with:
+#       # #     repository: 'nitro-espresso-integration'
+#       # #     owner: ${{ GITHUB_REPOSITORY_OWNER }}
 
-      # - name: test moving
-      #   run: |
-      #     set -x
+#       # - name: test moving
+#       #   run: |
+#       #     set -x
 
-      #     CHECKOUT_DIR=$PWD
-      #     cd /
-      #     mv -v $CHECKOUT_DIR /tmp/gha-work
-      #     cd /tmp/gha-work
+#       #     CHECKOUT_DIR=$PWD
+#       #     cd /
+#       #     mv -v $CHECKOUT_DIR /tmp/gha-work
+#       #     cd /tmp/gha-work
 
-      #     echo doing stuff in $(pwd)
-      #     ls -lah
+#       #     echo doing stuff in $(pwd)
+#       #     ls -lah
 
-      #     # HACK: move directory back to GITHUB_WORKSPACE
-      #     cd /
-      #     mv -v /tmp/gha-work $CHECKOUT_DIR
+#       #     # HACK: move directory back to GITHUB_WORKSPACE
+#       #     cd /
+#       #     mv -v /tmp/gha-work $CHECKOUT_DIR
 
-      # # - name: Lint
-      # #   uses: golangci/golangci-lint-action@v5
-      # #   with:
-      # #     version: v1.59.1
-      # #     skip-cache: true
-      # #     # working-directory: /tmp/gha-work
+#       # # - name: Lint
+#       # #   uses: golangci/golangci-lint-action@v5
+#       # #   with:
+#       # #     version: v1.59.1
+#       # #     skip-cache: true
+#       # #     # working-directory: /tmp/gha-work
 
-      # # - name: Cache Build Products
-      # #   uses: actions/cache@v3
-      # #   with:
-      # #     path: |
-      # #       ~/go/pkg/mod
-      # #       ~/.cache/go-build
-      # #     key: v1-${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ matrix.test-mode }}
-      # #     restore-keys: v1-${{ runner.os }}-go-
+#       # # - name: Cache Build Products
+#       # #   uses: actions/cache@v3
+#       # #   with:
+#       # #     path: |
+#       # #       ~/go/pkg/mod
+#       # #       ~/.cache/go-build
+#       # #     key: v1-${{ runner.os }}-go-${{ hashFiles('go.sum') }}-${{ matrix.test-mode }}
+#       # #     restore-keys: v1-${{ runner.os }}-go-
 
-      # # - uses: cargo-bins/cargo-binstall@main
+#       # # - uses: cargo-bins/cargo-binstall@main
 
-      # # - run: |
-      # #     cargo binstall -y rmz
-      # #     sudo mv /home/runner/.cargo/bin/rmz /usr/local/bin/rmz
+#       # # - run: |
+#       # #     cargo binstall -y rmz
+#       # #     sudo mv /home/runner/.cargo/bin/rmz /usr/local/bin/rmz
 
-      # # - run: |
-      # #     du -h -d 1 /opt/hostedtoolcache
+#       # # - run: |
+#       # #     du -h -d 1 /opt/hostedtoolcache
 
-      # # # Make more disk space available on public runner
-      # # - name: Remove unused software
-      # #   run: |
-      # #     echo "Available storage before:"
-      # #     sudo df -h
-      # #     echo
-      # #     sudo rmz -f /usr/share/dotnet
-      # #     sudo rmz -f /usr/share/swift
-      # #     sudo rmz -f /usr/share/gradle-*
-      # #     sudo rmz -f /usr/share/az_*
-      # #     sudo rmz -f /usr/local/lib/android
-      # #     sudo rmz -f /usr/local/lib/node_modules
-      # #     sudo rmz -f /opt/ghc
-      # #     sudo rmz -f /opt/az
-      # #     sudo rmz -f /opt/pipx
-      # #     sudo rmz -f /opt/google
-      # #     sudo rmz -f /opt/microsoft
-      # #     sudo rmz -f /opt/hostedtoolcache
-      # #     echo "Available storage after:"
-      # #     sudo df -h
-      # #     echo
+#       # # # Make more disk space available on public runner
+#       # # - name: Remove unused software
+#       # #   run: |
+#       # #     echo "Available storage before:"
+#       # #     sudo df -h
+#       # #     echo
+#       # #     sudo rmz -f /usr/share/dotnet
+#       # #     sudo rmz -f /usr/share/swift
+#       # #     sudo rmz -f /usr/share/gradle-*
+#       # #     sudo rmz -f /usr/share/az_*
+#       # #     sudo rmz -f /usr/local/lib/android
+#       # #     sudo rmz -f /usr/local/lib/node_modules
+#       # #     sudo rmz -f /opt/ghc
+#       # #     sudo rmz -f /opt/az
+#       # #     sudo rmz -f /opt/pipx
+#       # #     sudo rmz -f /opt/google
+#       # #     sudo rmz -f /opt/microsoft
+#       # #     sudo rmz -f /opt/hostedtoolcache
+#       # #     echo "Available storage after:"
+#       # #     sudo df -h
+#       # #     echo
