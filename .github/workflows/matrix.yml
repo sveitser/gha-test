@@ -18,8 +18,14 @@ jobs:
       - name: Sleep for matrix value
         run: |
           # if the matrix value is 20, simulate a failure
-          if [ ${{ matrix.matrix-value }} -eq 20 ]; then
-            echo "Simulating failure for matrix value 20"
+          # if [ ${{ matrix.matrix-value }} -eq 20 ]; then
+          #   echo "Simulating failure for matrix value 20"
+          #   exit 1
+          # fi
+          if [ "$GITHUB_RUN_ATTEMPT" -gt 1 ]; then
+            echo "🔁 This is a re-run (attempt $GITHUB_RUN_ATTEMPT)"
+          else
+            echo "▶️ This is the first run"
             exit 1
           fi
           sleep ${{ matrix.matrix-value }}
