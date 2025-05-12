@@ -16,7 +16,13 @@ jobs:
     name: Sleep ${{ matrix.matrix-value }}s
     steps:
       - name: Sleep for matrix value
-        run: sleep ${{ matrix.matrix-value }}
+        run: |
+          # if the matrix value is 20, simulate a failure
+          if [ ${{ matrix.matrix-value }} -eq 20 ]; then
+            echo "Simulating failure for matrix value 20"
+            exit 1
+          fi
+          sleep ${{ matrix.matrix-value }}
 
   matrix_aggregate:
     runs-on: ubuntu-latest
