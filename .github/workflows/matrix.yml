@@ -1,0 +1,36 @@
+name: Matrix Sleep Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  matrix_job:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        matrix-value: [10, 20]
+    name: Sleep ${{ matrix.matrix-value }}s
+    steps:
+      - name: Sleep for matrix value
+        run: sleep ${{ matrix.matrix-value }}
+
+  matrix_aggregate:
+    runs-on: ubuntu-latest
+    needs: matrix_job
+    if: !cancelled()
+    steps:
+      - name: All matrix jobs passed
+        run: |
+          echo "All results: ${{ toJson(needs) }}"
+
+          if ${{ contains(needs.*.result, 'failure') }}; then
+            echo "❌ One or more jobs failed."
+            exit 1
+          else
+            echo "✅ All jobs succeeded."
+            exit 0
+          fi
