@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        matrix-value: [10, 20]
+        matrix-value: [3, 6]
     name: Sleep ${{ matrix.matrix-value }}s
     steps:
       - name: Sleep for matrix value
@@ -39,10 +39,10 @@ jobs:
         run: |
           echo "All results: ${{ toJson(needs) }}"
 
-          if ${{ contains(needs.*.result, 'failure') }}; then
-            echo "❌ One or more jobs failed."
-            exit 1
-          else
+          if ${{ contains(needs.*.result, 'success') }}; then
             echo "✅ All jobs succeeded."
             exit 0
+          else
+            echo "❌ One or more jobs failed."
+            exit 1
           fi
