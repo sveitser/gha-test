@@ -55,7 +55,7 @@ jobs:
   matrix_aggregate:
     runs-on: ubuntu-latest
     needs: [matrix_job_1, matrix_job_2]
-    if: ${{ !cancelled() }}
+    if: ${{ always() && !cancelled() }}
     steps:
       - name: All matrix jobs passed
         run: |
