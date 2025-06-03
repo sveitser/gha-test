@@ -61,7 +61,7 @@ jobs:
           file: ${{ matrix.service }}.Dockerfile
           labels: ${{ steps.metadata.outputs.labels  }}
           # tags: ${{ steps.metadata.outputs.tags }}
-          platforms: ${{ matrix.platforms }}
+          platforms: ${{ matrix.platform }}
           cache-to: type=inline
           outputs: type=image,name=${{ matrix.image }},push-by-digest=true,name-canonical=true,push=false
 
@@ -74,7 +74,7 @@ jobs:
           file: ${{ matrix.service }}.Dockerfile
           labels: ${{ steps.metadata.outputs.labels  }}
           # tags: ${{ steps.metadata.outputs.tags }}
-          platforms: ${{ matrix.platforms }}
+          platforms: ${{ matrix.platform }}
           cache-to: type=inline
           outputs: type=image,name=${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true
 
@@ -134,10 +134,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner  }}
           password: ${{ secrets.GITHUB_TOKEN  }}
-
-      - name: Remove digests dir (NOTE probably not necessary)
-        run: |
-          rm -rf "${{ runner.temp }}/digests"
 
       - name: Download digests
         uses: actions/download-artifact@v4
