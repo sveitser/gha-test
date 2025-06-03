@@ -59,7 +59,7 @@ jobs:
       - name: Build and push docker (PR)
         if: github.event_name == 'pull_request'
         uses: docker/build-push-action@v5
-        id: build
+        id: build-pr
         with:
           context: .
           file: ${{ matrix.service }}.Dockerfile
@@ -71,7 +71,7 @@ jobs:
       - name: Build and push docker (non-PR)
         if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v5
-        id: build
+        id: build-non-pr
         with:
           context: .
           file: ${{ matrix.service }}.Dockerfile
@@ -85,7 +85,12 @@ jobs:
         run: |
           digest_dir="${{ runner.temp }}/digest-${{ github.run_number }}"
           mkdir -p "${digest_dir}"
-          digest="${{ steps.build.outputs.digest }}"
+          # Get the digest from build-pr and build-non-pr steps
+          if [ -n "${{ steps.build-pr.outputs.digest }}" ]; then
+            digest="${{ steps.build-pr.outputs.digest }}"
+          else
+            digest="${{ steps.build-non-pr.outputs.digest }}"
+          fi
           touch "${digest_dir}/${digest#sha256:}"
 
       - name: Upload digest to arm64
