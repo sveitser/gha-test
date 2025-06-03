@@ -81,6 +81,7 @@ jobs:
       - name: Export digest
         shell: bash
         run: |
+          set -x
           digest_dir="${{ runner.temp }}/digest-${{ github.run_number }}"
           mkdir -p "${digest_dir}"
           # Get the digest from build-pr and build-non-pr steps
@@ -90,6 +91,7 @@ jobs:
             digest="${{ steps.build-non-pr.outputs.digest }}"
           fi
           touch "${digest_dir}/${digest#sha256:}"
+          ls -lah "${digest_dir}"
 
       - name: Upload digest to arm64
         if: ${{ matrix.platform == 'linux/arm64' }}
