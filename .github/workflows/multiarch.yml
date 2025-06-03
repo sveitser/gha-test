@@ -18,11 +18,11 @@ jobs:
           - platform: linux/amd64
             runs-on: ubuntu-latest
             service: foo
-            image: ghcr.io/sveitser/test-gha/foo
+            image: ghcr.io/sveitser/gha-test/foo
           - platform: linux/arm64
             runs-on: ubuntu-latest
             service: foo
-            image: ghcr.io/sveitser/test-gha/foo
+            image: ghcr.io/sveitser/gha-test/foo
 
     runs-on: ${{ matrix.runs-on }}
 
@@ -120,7 +120,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - image: ghcr.io/sveitser/test-gha/foo
+          - image: ghcr.io/sveitser/gha-test/foo
 
     steps:
       - name: Set up Docker Buildx
