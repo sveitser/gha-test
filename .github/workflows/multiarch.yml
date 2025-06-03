@@ -73,7 +73,8 @@ jobs:
           if-no-files-found: error
 
       - name: Build and push docker (non-PR)
-        if: github.event_name != 'pull_request'
+        # only upload the artifact on amd builds
+        if: github.event_name != 'pull_request' && matrix.platform == 'linux/amd64'
         uses: docker/build-push-action@v5
         id: build-non-pr
         with:
