@@ -59,7 +59,7 @@ jobs:
           context: .
           file: ${{ matrix.service }}.Dockerfile
           labels: ${{ steps.metadata.outputs.labels  }}
-          # tags: ${{ steps.metadata.outputs.tags }}
+          tags: ${{ steps.metadata.outputs.tags }}
           platforms: ${{ matrix.platform }}
           outputs: type=docker,dest=${{ runner.temp }}/${{ matrix.service }}.tar
 
@@ -79,7 +79,7 @@ jobs:
           context: .
           file: ${{ matrix.service }}.Dockerfile
           labels: ${{ steps.metadata.outputs.labels  }}
-          # tags: ${{ steps.metadata.outputs.tags }}
+          # Note: the final multiarch image will receive the tag
           platforms: ${{ matrix.platform }}
           outputs: type=image,name=${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true
 
