@@ -46,15 +46,11 @@ jobs:
           username: ${{ github.repository_owner  }}
           password: ${{ secrets.GITHUB_TOKEN  }}
 
-      - name: Build and push docker image (non-PR)
-        uses: docker/build-push-action@v6
+      - name: Generate docker metadata
+        uses: docker/metadata-action@v5
+        id: metadata
         with:
-          context: .
-          file: Dockerfile
-          platforms: ${{ matrix.platform }}
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels  }}
-          outputs: type=registry
+          images: ${{ matrix.image }}
 
       - name: Build and push docker (PR)
         if: github.event_name == 'pull_request'
@@ -64,6 +60,7 @@ jobs:
           context: .
           file: ${{ matrix.service }}.Dockerfile
           labels: ${{ steps.metadata.outputs.labels  }}
+          # tags: ${{ steps.metadata.outputs.tags }}
           platforms: ${{ matrix.platforms }}
           cache-to: type=inline
           outputs: type=image,name=${{ matrix.image }},push-by-digest=true,name-canonical=true,push=false
@@ -76,6 +73,7 @@ jobs:
           context: .
           file: ${{ matrix.service }}.Dockerfile
           labels: ${{ steps.metadata.outputs.labels  }}
+          # tags: ${{ steps.metadata.outputs.tags }}
           platforms: ${{ matrix.platforms }}
           cache-to: type=inline
           outputs: type=image,name=${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true
