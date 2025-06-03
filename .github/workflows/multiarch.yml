@@ -82,7 +82,7 @@ jobs:
         shell: bash
         run: |
           set -x
-          digest_dir="${{ runner.temp }}/digest-${{ github.run_number }}"
+          digest_dir="${{ runner.temp }}/digests"
           mkdir -p "${digest_dir}"
           # Get the digest from build-pr and build-non-pr steps
           if [ -n "${{ steps.build-pr.outputs.digest }}" ]; then
@@ -97,8 +97,8 @@ jobs:
         if: ${{ matrix.platform == 'linux/arm64' }}
         uses: actions/upload-artifact@v4
         with:
-          name: "digests-${{ inputs.target }}-${{ github.run_number }}-arm64"
-          path: "${{ runner.temp }}/digests-${{ github.run_number }}/*"
+          name: "digests-arm64"
+          path: "${{ runner.temp }}/digests/*"
           if-no-files-found: error
           retention-days: 1
 
@@ -106,8 +106,8 @@ jobs:
         if: ${{ matrix.platform == 'linux/amd64' }}
         uses: actions/upload-artifact@v4
         with:
-          name: "digests-${{ inputs.target }}-${{ github.run_number }}-amd64"
-          path: "${{ runner.temp }}/digests-${{ github.run_number }}/*"
+          name: "digests-amd64"
+          path: "${{ runner.temp }}/digests/*"
           if-no-files-found: error
           retention-days: 1
 
