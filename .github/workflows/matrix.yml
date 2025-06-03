@@ -1,54 +1,70 @@
-name: Matrix Sleep Workflow
+# name: Matrix Sleep Workflow
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-  workflow_dispatch:
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#   workflow_dispatch:
 
-jobs:
-  matrix_job:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        matrix-value: [1, 2, 3]
-    name: Sleep ${{ matrix.matrix-value }}s
-    steps:
-      - name: Sleep for matrix value
-        run: |
-          # if the matrix value is 20, simulate a failure
-          if [ "$GITHUB_RUN_ATTEMPT" -eq 1 ]; then
-            if [ ${{ matrix.matrix-value }} -eq 1 ]; then
-              echo "Simulating failure for matrix value 1"
-              exit 1
-            fi
-            if [ ${{ matrix.matrix-value }} -eq 2 ]; then
-              echo "Simulating failure for matrix value 2"
-              exit 1
-            fi
-          fi
-          # if [ "$GITHUB_RUN_ATTEMPT" -gt 1 ]; then
-          #   echo "🔁 This is a re-run (attempt $GITHUB_RUN_ATTEMPT)"
-          # else
-          #   echo "▶️ This is the first run"
-          #   exit 1
-          # fi
-          sleep ${{ matrix.matrix-value }}
+# jobs:
+#   matrix_job_1:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         matrix-value: [1, 2, 3]
+#     name: 1 Sleep ${{ matrix.matrix-value }}s
+#     steps:
+#       - name: Sleep for matrix value
+#         run: |
+#           # if the matrix value is 20, simulate a failure
+#           if [ "$GITHUB_RUN_ATTEMPT" -eq 1 ]; then
+#             if [ ${{ matrix.matrix-value }} -eq 1 ]; then
+#               echo "Simulating failure for matrix value 1"
+#               exit 1
+#             fi
+#             if [ ${{ matrix.matrix-value }} -eq 2 ]; then
+#               echo "Simulating failure for matrix value 2"
+#               exit 1
+#             fi
+#           fi
+#           sleep ${{ matrix.matrix-value }}
 
-  matrix_aggregate:
-    runs-on: ubuntu-latest
-    needs: matrix_job
-    if: ${{ !cancelled() }}
-    steps:
-      - name: All matrix jobs passed
-        run: |
-          echo "All results: ${{ toJson(needs) }}"
+#   matrix_job_2:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         matrix-value: [1, 2, 3]
+#     name: 2 Sleep ${{ matrix.matrix-value }}s
+#     steps:
+#       - name: Sleep for matrix value
+#         run: |
+#           # if the matrix value is 20, simulate a failure
+#           if [ "$GITHUB_RUN_ATTEMPT" -eq 1 ]; then
+#             if [ ${{ matrix.matrix-value }} -eq 1 ]; then
+#               echo "Simulating failure for matrix value 1"
+#               exit 1
+#             fi
+#             if [ ${{ matrix.matrix-value }} -eq 2 ]; then
+#               echo "Simulating failure for matrix value 2"
+#               exit 1
+#             fi
+#           fi
+#           sleep ${{ matrix.matrix-value }}
 
-          if ${{ contains(needs.*.result, 'success') }}; then
-            echo "✅ All jobs succeeded."
-            exit 0
-          else
-            echo "❌ One or more jobs failed."
-            exit 1
-          fi
+
+#   matrix_aggregate:
+#     runs-on: ubuntu-latest
+#     needs: [matrix_job_1, matrix_job_2]
+#     if: ${{ always() && !cancelled() }}
+#     steps:
+#       - name: All matrix jobs passed
+#         run: |
+#           echo "All results: ${{ toJson(needs) }}"
+#           if ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}; then
+#             echo "❌ One or more jobs failed."
+#             exit 1
+#           else
+#             echo "✅ All jobs succeeded."
+#             exit 0
+#           fi
