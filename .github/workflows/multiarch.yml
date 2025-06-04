@@ -32,15 +32,16 @@ jobs:
         with:
           submodules: recursive
 
+      - name: docker version
+        run: docker version
+      - name: docker info
+        run: docker info
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         # with:
         #   platforms: ${{ matrix.platform }}
         #
-      - name: docker version
-        run: docker version
-      - name: docker info
-        run: docker info
 
 
       - name: Login to Github Container Repo
