@@ -20,7 +20,7 @@ jobs:
             service: foo
             image: ghcr.io/sveitser/gha-test/foo
           - platform: linux/arm64
-            runs-on: ubuntu-latest
+            runs-on: ubuntu-24.04-arm
             service: foo
             image: ghcr.io/sveitser/gha-test/foo
 
@@ -35,10 +35,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-        # TODO, remove once we have native arm runner
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v3
-
       - name: Login to Github Container Repo
         uses: docker/login-action@v3
         with:
@@ -52,49 +48,50 @@ jobs:
         with:
           images: ${{ matrix.image }}
 
-      - name: Build and push docker (PR)
+      - name: Build docker image and export to file (PR)
         if: github.event_name == 'pull_request'
         uses: docker/build-push-action@v5
-        id: build-pr
         with:
           context: .
           file: ${{ matrix.service }}.Dockerfile
           labels: ${{ steps.metadata.outputs.labels  }}
-          # tags: ${{ steps.metadata.outputs.tags }}
+          tags: ${{ steps.metadata.outputs.tags }}
           platforms: ${{ matrix.platform }}
-          cache-to: type=inline
-          outputs: type=image,name=${{ matrix.image }},push-by-digest=true,name-canonical=true,push=false
+          outputs: type=docker,dest=${{ runner.temp }}/${{ matrix.service }}.tar
+
+      - name: Upload artifact (PR only)
+        if: github.event_name == 'pull_request' && matrix.platform == 'linux/amd64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.service }}-docker-image
+          path: ${{ runner.temp }}/${{ matrix.service }}.tar
+          if-no-files-found: error
 
       - name: Build and push docker (non-PR)
         if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v5
-        id: build-non-pr
+        id: build
         with:
           context: .
           file: ${{ matrix.service }}.Dockerfile
           labels: ${{ steps.metadata.outputs.labels  }}
-          # tags: ${{ steps.metadata.outputs.tags }}
+          # Note: the final multiarch image will receive the tag
           platforms: ${{ matrix.platform }}
-          cache-to: type=inline
           outputs: type=image,name=${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
+        if: github.event_name != 'pull_request'
         shell: bash
         run: |
           set -x
           digest_dir="${{ runner.temp }}/digests"
           mkdir -p "${digest_dir}"
-          # Get the digest from build-pr and build-non-pr steps
-          if [ -n "${{ steps.build-pr.outputs.digest }}" ]; then
-            digest="${{ steps.build-pr.outputs.digest }}"
-          else
-            digest="${{ steps.build-non-pr.outputs.digest }}"
-          fi
+          digest="${{ steps.build.outputs.digest }}"
           touch "${digest_dir}/${digest#sha256:}"
           ls -lah "${digest_dir}"
 
       - name: Upload digest to arm64
-        if: ${{ matrix.platform == 'linux/arm64' }}
+        if: matrix.platform == 'linux/arm64' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: "digests-arm64"
@@ -103,7 +100,7 @@ jobs:
           retention-days: 1
 
       - name: Upload digest to amd64
-        if: ${{ matrix.platform == 'linux/amd64' }}
+        if: matrix.platform == 'linux/amd64' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: "digests-amd64"
@@ -116,6 +113,7 @@ jobs:
   # For documentation refer to
   # https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
   merge_into_multiplatform_images:
+    if: github.event_name != 'pull_request'
     needs:
       - docker_build
     runs-on: ubuntu-latest
