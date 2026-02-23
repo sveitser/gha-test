@@ -1,0 +1,47 @@
+name: artifact-test
+
+on:
+  workflow_dispatch:
+  push:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create dummy file (~100MB)
+        run: dd if=/dev/urandom of=dummy.bin bs=1M count=100
+
+      - name: Upload with v4
+        uses: actions/upload-artifact@v4
+        with:
+          name: dummy-file
+          path: dummy.bin
+          retention-days: 1
+
+  download-v4:
+    needs: upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download with v4
+        uses: actions/download-artifact@v4
+        with:
+          name: dummy-file
+
+      - name: Verify
+        run: ls -lah dummy.bin
+
+  download-v5:
+    needs: upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download with v5
+        uses: actions/download-artifact@v5
+        with:
+          name: dummy-file
+
+      - name: Verify
+        run: ls -lah dummy.bin
