@@ -12,36 +12,53 @@ jobs:
   upload:
     runs-on: ubuntu-latest
     steps:
-      - name: Create dummy file (~100MB)
-        run: dd if=/dev/urandom of=dummy.bin bs=1M count=100
+      - name: Create dummy files
+        run: |
+          dd if=/dev/urandom of=artifact-a.bin bs=1M count=100
+          dd if=/dev/urandom of=artifact-b.bin bs=1M count=100
+          dd if=/dev/urandom of=artifact-c.bin bs=1M count=100
 
-      - name: Upload with v4
+      - name: Upload artifact-a
         uses: actions/upload-artifact@v4
         with:
-          name: dummy-file
-          path: dummy.bin
+          name: artifact-a
+          path: artifact-a.bin
+          retention-days: 1
+
+      - name: Upload artifact-b
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-b
+          path: artifact-b.bin
+          retention-days: 1
+
+      - name: Upload artifact-c
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-c
+          path: artifact-c.bin
           retention-days: 1
 
   download-v4:
     needs: upload
     runs-on: ubuntu-latest
     steps:
-      - name: Download with v4
+      - name: Download artifact-b with v4
         uses: actions/download-artifact@v4
         with:
-          name: dummy-file
+          name: artifact-b
 
       - name: Verify
-        run: ls -lah dummy.bin
+        run: ls -lah artifact-b.bin
 
   download-v5:
     needs: upload
     runs-on: ubuntu-latest
     steps:
-      - name: Download with v5
+      - name: Download artifact-b with v5
         uses: actions/download-artifact@v5
         with:
-          name: dummy-file
+          name: artifact-b
 
       - name: Verify
-        run: ls -lah dummy.bin
+        run: ls -lah artifact-b.bin
