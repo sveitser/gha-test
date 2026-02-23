@@ -9,42 +9,84 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  upload:
-    strategy:
-      matrix:
-        name: [artifact-a, artifact-b, artifact-c]
+  upload-a:
     runs-on: ubuntu-latest
     steps:
-      - name: Create dummy file (~10MB)
-        run: dd if=/dev/urandom of=${{ matrix.name }}.bin bs=1M count=10
+      - name: Create dummy files
+        run: |
+          mkdir -p target/debug
+          dd if=/dev/urandom of=target/debug/binary-a bs=1M count=10
 
-      - name: Upload ${{ matrix.name }}
+      - name: Upload artifact-a
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.name }}
-          path: ${{ matrix.name }}.bin
-          retention-days: 1
+          name: artifact-a
+          if-no-files-found: error
+          path: |
+            target/debug/binary-a
 
-  download-v4:
-    needs: upload
+  upload-b:
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifact-b with v4
+      - name: Create dummy files
+        run: |
+          mkdir -p target/debug
+          dd if=/dev/urandom of=target/debug/binary-b bs=1M count=10
+
+      - name: Upload artifact-b
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-b
+          if-no-files-found: error
+          path: |
+            target/debug/binary-b
+
+  upload-c:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create dummy files
+        run: |
+          mkdir -p target/debug
+          dd if=/dev/urandom of=target/debug/binary-c bs=1M count=10
+
+      - name: Upload artifact-c
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-c
+          if-no-files-found: error
+          path: |
+            target/debug/binary-c
+
+  download-one-v4:
+    needs: [upload-a, upload-b, upload-c]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact-b with v4 (selective)
         uses: actions/download-artifact@v4
         with:
           name: artifact-b
 
       - name: Verify
-        run: ls -lah artifact-b.bin
+        run: ls -lahR .
 
-  download-v5:
-    needs: upload
+  download-all-v4:
+    needs: [upload-a, upload-b, upload-c]
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifact-b with v5
+      - name: Download all artifacts with v4
+        uses: actions/download-artifact@v4
+
+      - name: Verify
+        run: ls -lahR .
+
+  download-one-v5:
+    needs: [upload-a, upload-b, upload-c]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact-b with v5 (selective)
         uses: actions/download-artifact@v5
         with:
           name: artifact-b
 
       - name: Verify
-        run: ls -lah artifact-b.bin
+        run: ls -lahR .
