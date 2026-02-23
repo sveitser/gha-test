@@ -10,33 +10,19 @@ concurrency:
 
 jobs:
   upload:
+    strategy:
+      matrix:
+        name: [artifact-a, artifact-b, artifact-c]
     runs-on: ubuntu-latest
     steps:
-      - name: Create dummy files
-        run: |
-          dd if=/dev/urandom of=artifact-a.bin bs=1M count=100
-          dd if=/dev/urandom of=artifact-b.bin bs=1M count=100
-          dd if=/dev/urandom of=artifact-c.bin bs=1M count=100
+      - name: Create dummy file (~10MB)
+        run: dd if=/dev/urandom of=${{ matrix.name }}.bin bs=1M count=10
 
-      - name: Upload artifact-a
+      - name: Upload ${{ matrix.name }}
         uses: actions/upload-artifact@v4
         with:
-          name: artifact-a
-          path: artifact-a.bin
-          retention-days: 1
-
-      - name: Upload artifact-b
-        uses: actions/upload-artifact@v4
-        with:
-          name: artifact-b
-          path: artifact-b.bin
-          retention-days: 1
-
-      - name: Upload artifact-c
-        uses: actions/upload-artifact@v4
-        with:
-          name: artifact-c
-          path: artifact-c.bin
+          name: ${{ matrix.name }}
+          path: ${{ matrix.name }}.bin
           retention-days: 1
 
   download-v4:
